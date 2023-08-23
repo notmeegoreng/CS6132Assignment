@@ -2,7 +2,7 @@ import ipaddress
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-import routing_table
+from view import routing_table
 
 
 def init(root):
@@ -30,8 +30,10 @@ class TableEntry(ttk.Entry):
 
 
 class RoutingTableWidget(ttk.Frame):
-    def __init__(self, master, data=None):
+    def __init__(self, master, data=None, *, on_update=lambda: None):
         super().__init__(master)
+        self.on_update = on_update
+
         self.table_with_header = ttk.Frame(self)
         self.table_with_header.grid(row=0, columnspan=2)
 
@@ -120,6 +122,7 @@ class RoutingTableWidget(ttk.Frame):
             return
         self.routing_table = routing_table.RoutingTable.load(file)
         self.populate(self.routing_table.interfaces.items())
+        self.on_update()
 
     def on_key(self, event):
         print('key event')
@@ -135,6 +138,7 @@ class RoutingTableWidget(ttk.Frame):
             except ValueError:
                 self.error.configure(text='Invalid IP interface address! Format: <address>/<mask size>')
                 return
+            self.error.configure(text='')
             self.changed = False
             self.mode.configure(text='')
 
@@ -144,3 +148,5 @@ class RoutingTableWidget(ttk.Frame):
 
     def update_table(self):
         self.routing_table.interfaces = self.convert()
+        self.on_update()
+
