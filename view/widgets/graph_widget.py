@@ -53,8 +53,9 @@ class GraphWidget(tk.Canvas):
         # draw router
         self.image_id = self.create_image(w // 2, h // 2, anchor=tk.CENTER, image=self.router_img)
 
-    def highlight_line(self, address):
+    def highlight_line(self, address=None):
         if self.highlighted is not None:
             self.itemconfig(self.lines[self.highlighted][0], state=tk.NORMAL)
         self.highlighted = address
-        self.itemconfig(self.lines[address][0], state=tk.DISABLED)
+        if address is not None:
+            self.itemconfig(self.lines[address][0], state=tk.DISABLED)

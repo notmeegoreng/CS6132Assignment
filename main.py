@@ -53,11 +53,15 @@ def route_packet():
         addr = ipaddress.ip_address(dest_entry.get())
     except ValueError:
         packet_error.configure(text='Error: Invalid IP address!')
+        packet_ans.configure(text='')
+        graph_widget.highlight_line()
         return
 
     ident, addr = routing_table_widget.routing_table.route(addr)
     if ident is None:
         packet_error.configure(text='Error: No route found for this IP address!')
+        packet_ans.configure(text='')
+        graph_widget.highlight_line()
         return
 
     packet_error.configure(text='')
