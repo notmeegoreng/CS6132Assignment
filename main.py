@@ -21,7 +21,7 @@ ttk.Separator(router_frame, orient='horizontal', style='App.TSeparator').pack(fi
 routing_table_widget = widgets.RoutingTableWidget(router_frame)
 routing_table_widget.pack(expand=True)
 
-router_frame.pack(side=tk.LEFT, fill=tk.Y, padx=4, expand=True)
+router_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=4, expand=True)
 
 graph_frame = ttk.Frame(window, borderwidth=4, relief='ridge')
 graph_widget = widgets.GraphWidget(graph_frame, routing_widget=routing_table_widget)
@@ -45,7 +45,7 @@ packet_error.pack()
 packet_ans = ttk.Label(packet_frame)
 packet_ans.pack()
 
-packet_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=4, expand=True)
+packet_frame.pack(side=tk.RIGHT, fill=tk.BOTH, padx=4, expand=True)
 
 
 def route_packet():
@@ -72,5 +72,12 @@ def route_packet():
 
 
 route_button.configure(command=route_packet)
+
+# credit: https://stackoverflow.com/a/10452097
+root.update()
+graph_widget.config(height=graph_widget.winfo_width())
+graph_widget.update()
+# now root.geometry() returns valid size/placement
+root.minsize(root.winfo_width(), root.winfo_height())
 
 root.mainloop()

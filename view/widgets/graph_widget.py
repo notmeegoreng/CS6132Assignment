@@ -20,10 +20,6 @@ class GraphWidget(tk.Canvas):
         print('drawing graph')
         w, h = self.winfo_width(), self.winfo_height()
         print(w, h)
-        if abs(w - h) > 10:
-            print('config')
-            # self.configure(height=w)
-            # return
         if self.image_id is not None:
             self.delete(self.image_id)
             for line_id, label in self.lines.values():
@@ -83,5 +79,3 @@ class GraphWidget(tk.Canvas):
             else:
                 self.after(10, move_packet, times + 1)
         move_packet()
-
-
