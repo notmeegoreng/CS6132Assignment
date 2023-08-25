@@ -66,7 +66,7 @@ def route_packet():
 
     packet_error.configure(text='')
 
-    packet_ans.configure(text=ident)
+    packet_ans.configure(text=f'Packet sent out of interface {ident}')
     graph_widget.highlight_line(interface)
     graph_widget.animate_packet(interface)
 
