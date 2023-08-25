@@ -31,21 +31,25 @@ class TableEntry(ttk.Entry):
 
 class RoutingTableWidget(ttk.Frame):
     def __init__(self, master, data=None, *, on_update=lambda: None):
-        super().__init__(master)
+        super().__init__(master, borderwidth=4, relief='groove')
         self.on_update = on_update
+        self.grid_columnconfigure((0, 1), weight=1)
 
         self.table_with_header = ttk.Frame(self)
         self.table_with_header.grid(row=0, columnspan=2)
+        self.table_with_header.grid_columnconfigure((0, 1), weight=1)
 
         self.table_header = ttk.Frame(self)
         self.table_header.grid(row=0, columnspan=2, sticky=tk.EW)
-        self.table_header.grid_columnconfigure(0, weight=1)
-        self.table_header.grid_columnconfigure(1, weight=1)
+        self.table_header.grid_columnconfigure((0, 1), weight=1)
         ttk.Label(self.table_header, text='Interface Number').grid(row=0, column=0)
         ttk.Label(self.table_header, text='Interface Address').grid(row=0, column=1)
 
-        self.table = ttk.Frame(self, style='RouteTable.TFrame', borderwidth=1, relief='raised')
-        self.table.grid(row=1, columnspan=2)
+        self.table = ttk.Frame(self, style='RouteTable.TFrame')
+        self.table.grid(row=1, columnspan=2, sticky=tk.EW)
+        self.table.grid_columnconfigure((0, 1), weight=1)
+        self.table.bind_class('router_table_entry', '<Key>', self.on_key)
+        self.table.bind_class('router_table_entry', '<Return>', self.on_return_key)
 
         # populate table
         if not data:
@@ -53,14 +57,12 @@ class RoutingTableWidget(ttk.Frame):
         self.entries = []
         self.grid_last_index = 0
         self.populate(data)
-        self.table.bind_class('router_table_entry', '<Key>', self.on_key)
-        self.table.bind_class('router_table_entry', '<Return>', self.on_return_key)
 
-        ttk.Button(self, text='+', command=self.add_row).grid(row=2, column=0, sticky=tk.W, pady=4)
-        ttk.Button(self, text='-', command=self.remove_row).grid(row=2, column=1, sticky=tk.E, pady=4)
+        ttk.Button(self, text='+', command=self.add_row).grid(row=2, column=0, sticky=tk.EW, pady=4)
+        ttk.Button(self, text='-', command=self.remove_row).grid(row=2, column=1, sticky=tk.EW, pady=4)
 
-        ttk.Button(self, text='Save', command=self.save).grid(row=4, column=0, sticky=tk.W, pady=4)
-        ttk.Button(self, text='Load', command=self.load).grid(row=4, column=1, sticky=tk.E, pady=4)
+        ttk.Button(self, text='Save', command=self.save).grid(row=4, column=0, sticky=tk.EW, pady=4)
+        ttk.Button(self, text='Load', command=self.load).grid(row=4, column=1, sticky=tk.EW, pady=4)
 
         self.mode = ttk.Label(self)
         self.mode.grid(row=5, columnspan=2)
@@ -86,8 +88,8 @@ class RoutingTableWidget(ttk.Frame):
     def add_table_entries(self, row):
         e0 = TableEntry(self.table, validate_command=(TableEntry.table_validate_number, '%P'))
         e1 = TableEntry(self.table, validate_command=TableEntry.table_validate_interface)
-        e0.grid(row=row, column=0)
-        e1.grid(row=row, column=1)
+        e0.grid(row=row, column=0, sticky=tk.EW)
+        e1.grid(row=row, column=1, sticky=tk.EW)
         self.entries.append((e0, e1))
         return e0, e1
 
@@ -138,7 +140,7 @@ class RoutingTableWidget(ttk.Frame):
             self.mode.configure(text='')
 
     def convert(self):
-        d = {int(a.get()): ipaddress.ip_interface(b.get()) for a, b in self.entries if a and b}
+        d = {int(a.get()): ipaddress.ip_interface(b.get()) for a, b in self.entries if a.get() and b.get()}
         return d
 
     def update_table(self):
