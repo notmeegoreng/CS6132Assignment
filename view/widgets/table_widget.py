@@ -76,9 +76,7 @@ class RoutingTableWidget(ttk.Frame):
             e1.grid_forget()
         self.entries.clear()
         i = 1
-        print(data)
         for i, (a, b) in enumerate(data, 1):
-            print(i, a, b, str(b))
             e0, e1 = self.add_table_entries(i)
             e0.insert(0, a)
             e1.insert(0, str(b))
@@ -125,13 +123,10 @@ class RoutingTableWidget(ttk.Frame):
         self.on_update()
 
     def on_key(self, event):
-        print('key event')
         self.changed = True
         self.mode.configure(text='Editing mode. Press enter to save changes.')
-        print(event.char)
 
     def on_return_key(self, event):
-        print('return event')
         if self.changed:
             try:
                 self.update_table()

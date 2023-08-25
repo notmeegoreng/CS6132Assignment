@@ -17,16 +17,13 @@ class GraphWidget(tk.Canvas):
         self.packet_img = tk.PhotoImage(file='view/assets/frame.ppm')
 
     def draw_graph(self, event=None):
-        print('drawing graph')
         w, h = self.winfo_width(), self.winfo_height()
-        print(w, h)
         if self.image_id is not None:
             self.delete(self.image_id)
             for line_id, label in self.lines.values():
                 self.delete(line_id)
                 label.place_forget()
             self.lines.clear()
-        print(self.winfo_width(), self.winfo_height())
 
         interfaces = self.routing_widget.routing_table.interfaces
         n = len(interfaces)
@@ -68,7 +65,6 @@ class GraphWidget(tk.Canvas):
         line_dist = 2 ** 0.5 * s // 3
         x = line_dist * math.cos(angle)
         y = line_dist * math.sin(angle)
-        print('animate')
         self.after(100, self.packet_moving, packet, x, y)
 
     def packet_moving(self, packet, x, y):
