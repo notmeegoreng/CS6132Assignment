@@ -9,7 +9,7 @@ root = tk.Tk()
 widgets.init(root)
 
 window = ttk.Frame(root, padding=10)
-window.pack()
+window.pack(fill=tk.BOTH, expand=tk.TRUE)
 
 ttk.Style().configure('Error.TLabel', foreground='red')
 ttk.Style().configure('App.TSeparator', padding=2)
@@ -25,11 +25,11 @@ router_frame.pack(side=tk.LEFT, fill=tk.Y, padx=4, expand=True)
 
 graph_frame = ttk.Frame(window, borderwidth=4, relief='ridge')
 graph_widget = widgets.GraphWidget(graph_frame, routing_widget=routing_table_widget)
-graph_widget.pack(fill=tk.BOTH)
+graph_widget.pack(fill=tk.BOTH, expand=tk.TRUE)
+ttk.Label(graph_frame, text='Images taken from Cisco Packet Tracer').pack()
 
-graph_frame.pack(side=tk.BOTTOM, before=router_frame, fill=tk.X, padx=4, pady=8, expand=True)
+graph_frame.pack(before=router_frame, fill=tk.BOTH, padx=4, pady=8, expand=tk.TRUE)
 image_id = None
-
 
 packet_frame = ttk.Frame(window, borderwidth=4, relief='ridge')
 
@@ -57,7 +57,7 @@ def route_packet():
         graph_widget.highlight_line()
         return
 
-    ident, addr = routing_table_widget.routing_table.route(addr)
+    ident, interface = routing_table_widget.routing_table.route(addr)
     if ident is None:
         packet_error.configure(text='Error: No route found for this IP address!')
         packet_ans.configure(text='')
@@ -67,7 +67,8 @@ def route_packet():
     packet_error.configure(text='')
 
     packet_ans.configure(text=ident)
-    graph_widget.highlight_line(addr)
+    graph_widget.highlight_line(interface)
+    graph_widget.animate_packet(interface)
 
 
 route_button.configure(command=route_packet)

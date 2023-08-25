@@ -13,7 +13,8 @@ class GraphWidget(tk.Canvas):
         routing_widget.on_update = self.draw_graph
         self.bind('<Configure>', self.draw_graph)
 
-        self.router_img = tk.PhotoImage(file='view/router.ppm')
+        self.router_img = tk.PhotoImage(file='view/assets/router.ppm')
+        self.packet_img = tk.PhotoImage(file='view/assets/frame.ppm')
 
     def draw_graph(self, event=None):
         print('drawing graph')
@@ -21,8 +22,8 @@ class GraphWidget(tk.Canvas):
         print(w, h)
         if abs(w - h) > 10:
             print('config')
-            self.configure(height=w)
-            return
+            # self.configure(height=w)
+            # return
         if self.image_id is not None:
             self.delete(self.image_id)
             for line_id, label in self.lines.values():
@@ -33,7 +34,8 @@ class GraphWidget(tk.Canvas):
 
         interfaces = self.routing_widget.routing_table.interfaces
         n = len(interfaces)
-        line_dist = (w ** 2 + h ** 2) ** 0.5 // 4
+        s = min(w, h)
+        line_dist = 2 ** 0.5 * s // 3.5
         for i, interface in enumerate(interfaces.values()):
             # draw lines
             angle = 2 * math.pi * i / n
@@ -49,13 +51,37 @@ class GraphWidget(tk.Canvas):
             label.place(x=x, y=y, anchor=tk.CENTER)
             self.lines[interface] = (line_id, label)
         if self.highlighted is not None:
+            # highlight line
             self.itemconfig(self.lines[self.highlighted][0], state=tk.DISABLED)
         # draw router
         self.image_id = self.create_image(w // 2, h // 2, anchor=tk.CENTER, image=self.router_img)
 
-    def highlight_line(self, address=None):
+    def highlight_line(self, interface=None):
         if self.highlighted is not None:
             self.itemconfig(self.lines[self.highlighted][0], state=tk.NORMAL)
-        self.highlighted = address
-        if address is not None:
-            self.itemconfig(self.lines[address][0], state=tk.DISABLED)
+        self.highlighted = interface
+        if interface is not None:
+            self.itemconfig(self.lines[interface][0], state=tk.DISABLED)
+
+    def animate_packet(self, interface):
+        w, h = self.winfo_width(), self.winfo_height()
+        packet = self.create_image(w // 2, h // 2, anchor=tk.CENTER, image=self.packet_img)
+        s = min(w, h)
+        i = tuple(self.lines).index(interface)
+        angle = 2 * math.pi * i / len(self.lines)
+        line_dist = 2 ** 0.5 * s // 3
+        x = line_dist * math.cos(angle)
+        y = line_dist * math.sin(angle)
+        print('animate')
+        self.after(100, self.packet_moving, packet, x, y)
+
+    def packet_moving(self, packet, x, y):
+        def move_packet(times=0):
+            self.move(packet, x / 100, y / 100)
+            if times == 100:
+                self.delete(packet)
+            else:
+                self.after(10, move_packet, times + 1)
+        move_packet()
+
+

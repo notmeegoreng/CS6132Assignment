@@ -143,7 +143,7 @@ class RoutingTableWidget(ttk.Frame):
             self.mode.configure(text='')
 
     def convert(self):
-        d = {int(a.get()): ipaddress.ip_interface(b.get()) for a, b in self.entries}
+        d = {int(a.get()): ipaddress.ip_interface(b.get()) for a, b in self.entries if a and b}
         return d
 
     def update_table(self):
