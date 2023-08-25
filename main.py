@@ -17,9 +17,9 @@ ttk.Style().configure('App.TSeparator', padding=2)
 
 router_frame = ttk.Frame(window, borderwidth=4, relief='ridge')  # flat, groove, raised, ridge, solid, or sunken
 ttk.Label(router_frame, text='Routing Table').pack()
-ttk.Separator(router_frame, orient='horizontal', style='App.TSeparator').pack(fill=tk.X, pady=2, expand=tk.TRUE)
+ttk.Separator(router_frame, orient='horizontal', style='App.TSeparator').pack(fill=tk.X, pady=2)
 routing_table_widget = widgets.RoutingTableWidget(router_frame)
-routing_table_widget.pack(expand=True)
+routing_table_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 router_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=4, expand=True)
 
@@ -28,7 +28,7 @@ graph_widget = widgets.GraphWidget(graph_frame, routing_widget=routing_table_wid
 graph_widget.pack(fill=tk.BOTH, expand=tk.TRUE)
 ttk.Label(graph_frame, text='Images taken from Cisco Packet Tracer').pack()
 
-graph_frame.pack(before=router_frame, fill=tk.BOTH, padx=4, pady=8, expand=tk.TRUE)
+graph_frame.pack(side=tk.LEFT, before=router_frame, fill=tk.BOTH, padx=4, expand=tk.TRUE)
 image_id = None
 
 packet_frame = ttk.Frame(window, borderwidth=4, relief='ridge')
