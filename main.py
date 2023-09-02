@@ -6,6 +6,8 @@ from view import widgets
 
 root = tk.Tk()
 
+root.title('Router Forwarding Simulator')
+
 widgets.init(root)
 
 window = ttk.Frame(root, padding=10)
