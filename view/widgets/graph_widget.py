@@ -65,13 +65,18 @@ class GraphWidget(tk.Canvas):
         line_dist = 2 ** 0.5 * s // 3
         x = line_dist * math.cos(angle)
         y = line_dist * math.sin(angle)
-        self.after(100, self.packet_moving, packet, x, y)
+        self.after(100, self.packet_moving, packet, x, y, w // 2, h // 2)
 
-    def packet_moving(self, packet, x, y):
+    def packet_moving(self, packet, x, y, x_i, y_i):
+        x_m = x / 100
+        y_m = y / 100
+
         def move_packet(times=0):
-            self.move(packet, x / 100, y / 100)
-            if times == 100:
+            self.move(packet, x_m, y_m)
+            c_x, c_y = self.coords(packet)
+            if abs(c_x - x_i - x) <= 25 and abs(c_y - y_i - y) <= 25:
                 self.delete(packet)
             else:
                 self.after(10, move_packet, times + 1)
+
         move_packet()
